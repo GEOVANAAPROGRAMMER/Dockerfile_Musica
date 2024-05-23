@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  db:
+    image: oracleinanutshell/oracle-xe-11g
+    restart: always
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_PASSWORD=oracle
+    ports:
+      - "1521:1521"
+    volumes:
+      - db_data:/u01/app/oracle
+
+  api:
+    build: ./api
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db:1521/XE
+      DATABASE_USER: system
+      DATABASE_PASSWORD: oracle
+
+volumes:
+  db_data:
